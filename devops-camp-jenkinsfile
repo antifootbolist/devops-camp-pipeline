@@ -29,7 +29,7 @@ pipeline {
             steps {
                 echo "Building application image"
                 //TODO("Lab 4 - Artifact Management"): build the docker app image
-                withCredentials([usernameColonPassword(credentialsId: 'HARBOR_AUTH_TOKEN', variable: 'HARBOR-AUTH')]) {
+                withCredentials([usernameColonPassword(credentialsId: 'aborodulin-harbor-auth', variable: 'HARBOR-AUTH')]) {
                     script {
                         sh 'docker build -t $APP_IMAGE_NAME-$COMMIT_HASH -f ./app/Dockerfile ./afs-labs-student'
                         docker.withRegistry('https://$HARBOR_REGISTRY', '$HARBOR_AUTH_TOKEN') {
@@ -57,7 +57,7 @@ pipeline {
         //TODO("Lab 7 - Automated Security Scans"): add a stage
         stage('Security scanning') {
             steps {
-                  withCredentials([usernamePassword(credentialsId: 'HARBOR_AUTH_TOKEN', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                  withCredentials([usernamePassword(credentialsId: 'aborodulin-harbor-auth', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                       echo "Scanning $APP_IMAGE_NAME image"
                       sh 'python harbor_scanner.py -i $APP_IMAGE_NAME -r $HARBOR_REGISTRY -p $HARBOR_PROJECT -c ${USERNAME}:${PASSWORD}'
                   }
